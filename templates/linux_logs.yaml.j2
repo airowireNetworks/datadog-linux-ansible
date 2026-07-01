@@ -1,0 +1,17 @@
+logs:
+  - type: file
+    path: {{ syslog_path }}
+    service: linux
+    source: syslog
+
+  - type: file
+    path: {{ authlog_path }}
+    service: linux
+    source: auth
+
+{% if application_logs_enabled %}
+  - type: file
+    path: {{ application_log_path }}
+    service: application
+    source: custom
+{% endif %}

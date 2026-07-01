@@ -1,0 +1,15 @@
+---
+- name: Ensure Datadog Agent service is running
+  service:
+    name: datadog-agent
+    state: started
+    enabled: yes
+
+- name: Check Datadog Agent status
+  command: datadog-agent status
+  register: datadog_status
+  changed_when: false
+
+- name: Display Datadog Agent status
+  debug:
+    var: datadog_status.stdout_lines

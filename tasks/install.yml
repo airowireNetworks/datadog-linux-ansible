@@ -1,0 +1,58 @@
+---
+- name: Install required packages on Debian/Ubuntu
+  apt:
+    name:
+      - curl
+      - apt-transport-https
+      - ca-certificates
+      - gnupg
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Install required packages on RedHat
+  yum:
+    name:
+      - curl
+      - ca-certificates
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Check if Datadog Agent is already installed
+  command: which datadog-agent
+  register: datadog_installed
+  ignore_errors: yes
+  changed_when: false
+
+- name: Download Datadog install script
+  get_url:
+    url: https://install.datadoghq.com/scripts/install_script_agent7.sh
+    dest: /tmp/install_script_agent7.sh
+    mode: '0755'
+  when: datadog_installed.rc != 0
+
+- name: Install Datadog Agent
+  shell: |
+    DD_API_KEY="{{ datadog_api_key }}" \
+    DD_SITE="{{ datadog_site }}" \
+    bash /tmp/install_script_agent7.sh
+  args:
+    executable: /bin/bash
+  environment:
+    DD_API_KEY: "{{ datadog_api_key }}"
+    DD_SITE: "{{ datadog_site }}"
+  register: datadog_install
+  when: datadog_installed.rc != 0
+
+- name: Display installer output
+  debug:
+    var: datadog_install.stdout_lines
+  when:
+    - datadog_install is defined
+    - datadog_installed.rc != 0
+
+- name: Ensure Datadog Agent service is enabled
+  systemd:
+    name: datadog-agent
+    enabled: yes
+    state: started

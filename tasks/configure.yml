@@ -1,0 +1,25 @@
+- name: Enable log collection in datadog.yaml
+  lineinfile:
+    path: /etc/datadog-agent/datadog.yaml
+    regexp: '^logs_enabled:'
+    line: 'logs_enabled: true'
+
+- name: Add dd-agent to adm group (Ubuntu/Debian)
+  user:
+    name: dd-agent
+    groups: adm
+    append: yes
+  when: ansible_os_family == "Debian"
+
+- name: Ensure Linux integration directory exists
+  file:
+    path: /etc/datadog-agent/conf.d/linux.d
+    state: directory
+    owner: dd-agent
+    group: dd-agent
+    mode: '0755'
+
+- name: Restart Datadog Agent
+  service:
+    name: datadog-agent
+    state: restarted

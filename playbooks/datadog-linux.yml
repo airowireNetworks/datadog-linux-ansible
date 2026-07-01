@@ -1,0 +1,17 @@
+---
+- name: Install and Configure Datadog Agent on Linux
+  hosts: linux
+  become: true
+  gather_facts: true
+
+  vars_files:
+    - ../group_vars/all.yml
+
+  handlers:
+    - import_tasks: ../handlers/main.yml
+
+  tasks:
+    - import_tasks: ../tasks/install.yml
+    - import_tasks: ../tasks/configure.yml
+    - import_tasks: ../tasks/logs.yml
+    - import_tasks: ../tasks/verify.yml

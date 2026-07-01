@@ -1,0 +1,17 @@
+
+---
+datadog_api_key: "repalce-you-api-key"
+
+datadog_site: "datadoghq.com"
+
+logs_enabled: true
+
+application_logs_enabled: false
+
+application_log_path: "/opt/app/logs/*.log"
+
+syslog_path: "/var/log/syslog"
+
+authlog_path: "/var/log/auth.log"
+
+agent_major_version: "7"

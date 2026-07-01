@@ -1,0 +1,13 @@
+---
+- name: Deploy Linux log configuration
+  template:
+    src: ../templates/linux_logs.yaml.j2
+    dest: /etc/datadog-agent/conf.d/linux.d/conf.yaml
+    owner: dd-agent
+    group: dd-agent
+    mode: '0644'
+
+- name: Restart Datadog Agent after log configuration
+  service:
+    name: datadog-agent
+    state: restarted
