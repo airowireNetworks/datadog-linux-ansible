@@ -5,6 +5,12 @@
     state: started
     enabled: yes
 
+- name: Wait for Datadog Agent API to become available
+  wait_for:
+    host: 127.0.0.1
+    port: 5001
+    timeout: 60
+
 - name: Check Datadog Agent status
   command: datadog-agent status
   register: datadog_status
