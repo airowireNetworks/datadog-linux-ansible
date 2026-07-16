@@ -4,6 +4,18 @@
     regexp: '^logs_enabled:'
     line: 'logs_enabled: true'
 
+- name: Update Datadog API key
+  lineinfile:
+    path: /etc/datadog-agent/datadog.yaml
+    regexp: '^api_key:'
+    line: "api_key: {{ datadog_api_key }}"
+
+- name: Update Datadog site
+  lineinfile:
+    path: /etc/datadog-agent/datadog.yaml
+    regexp: '^site:'
+    line: "site: {{ datadog_site }}"
+
 - name: Add dd-agent to adm group (Ubuntu/Debian)
   user:
     name: dd-agent
