@@ -1,3 +1,26 @@
+---
+- name: Ensure Datadog Agent service is running
+  service:
+    name: datadog-agent
+    state: started
+    enabled: yes
+
+- name: Wait for Datadog Agent API to become available
+  wait_for:
+    host: 127.0.0.1
+    port: 5001
+    timeout: 60
+
+- name: Check Datadog Agent status
+  command: datadog-agent status
+  register: datadog_status
+  changed_when: false
+
+- name: Display Datadog Agent status
+  debug:
+    var: datadog_status.stdout_lines
+docserver@mkdocs:~/datadog-linux-ansible/tasks$ ^C
+docserver@mkdocs:~/datadog-linux-ansible/tasks$ cat configure.yml
 - name: Enable log collection in datadog.yaml
   lineinfile:
     path: /etc/datadog-agent/datadog.yaml
